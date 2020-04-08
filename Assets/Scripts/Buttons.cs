@@ -11,6 +11,10 @@ public class Buttons : MonoBehaviour
 
     public GameObject inputFieldObject;
 
+    public TotalRow totalRow;
+
+    List<GameObject> elements = new List<GameObject>();
+
     private void Awake()
     {
         //If the grid variable was not initialized in editor
@@ -38,6 +42,7 @@ public class Buttons : MonoBehaviour
         {
             //Spawn the element needed and parent it to the grid
             GameObject spawned = Instantiate(toSpawn, grid.transform);
+            elements.Add(spawned);
             spawned.GetComponent<Buttons>().inputFieldObject.SetActive(true);
 
         }
@@ -48,11 +53,49 @@ public class Buttons : MonoBehaviour
         }
     }
 
+    //Remove an element in the grid
+    public void RemoveElement()
+    {
+        //Ensure there is an element to remove
+        if (elements.Count > 0)
+        {
+            //Get the object that needs to be removed (currently will always be the last one
+            GameObject elementToRemove = elements[elements.Count - 1];
+            //Remove the element from the list
+            elements.Remove(elementToRemove);
+            //Destroy the gameobject in the scene
+            Destroy(elementToRemove);
+        }
+        //If there are no elements to remove
+        else
+        {
+            Debug.Log("There are no elements to delete!");
+        }
+    }
+
+    public void SaveApplication()
+    {
+        //This will save a file
+
+    }
+
+    public void LoadApplication()
+    {
+        //This will load a save file
+    }
+
+    public void ExitApplication()
+    {
+        //Pop up to save, then confirm
+        Application.Quit();
+    }
+
     //Add to the count when button clicked
     public void AddToCount(GameObject text)
     {
         //Do the math stuff needed for the correct amount to show
         DoMath(text, 1);
+        totalRow.UpdateTotal();
     }
 
     //Subtract from the count when button clicked
@@ -63,6 +106,8 @@ public class Buttons : MonoBehaviour
         {
             //Do the math stuff needed for the correct amount to show
             DoMath(text, -1);
+            totalRow.UpdateTotal();
+
         }
         //If value is already 0, send a message
         else
